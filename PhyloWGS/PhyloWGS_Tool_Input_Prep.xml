@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><tool id="PhyloWGS_Tool_Input_Prep" name="PhyloWGS 2 - Tool Input Prep" version="0.1.0">
+  <stdio>
+    <exit_code range="1:"/>
+  </stdio>
+  <requirements>
+    <container type="docker">docker.synapse.org/syn2813581/5641737/phylowgs:smchet1</container>
+  </requirements>
+  <command>
+<![CDATA[
+python /opt/phylowgs/parser/create_phylowgs_inputs.py 
+#if $subsample.run == "yes":
+--sample-size ${subsample.count}
+#end if
+#if $only_normal_cn
+--only-normal-cn 
+#end if
+--cnvs ${cnvs}
+--output-cnvs ${output_cnvs}
+--output-variants ${output_variants}
+--variant-type ${input_type}
+--cnv-confidence ${cnv_confidence}
+--read-length ${read_length}
+${vcf_file}
+]]></command>
+  <inputs>
+        <conditional name="subsample">
+            <param help="Subsample SSMs to reduce PhyloWGS runtime" label="Run Subsampling" name="run" type="select">
+                <option value="yes">Yes</option>
+                <option selected="True" value="no">No</option>
+            </param>
+            <when value="yes">
+                <param help="Subsample reported number of SSMs" label="Subsample Size" name="count" type="integer" value="0"/>
+            </when>
+        </conditional>
+        <param format="tabular" help="CNVs extracted from Battenberg file using PhyloWGS CNVs Prep" name="cnvs" optional="false" type="data"/>
+        <param help="Only output variants lying in normal CN regions. Do not output CNV data directly." label="Only report CN regions" name="only_normal_cn" type="boolean"/>
+        <param name="input_type" type="select" value="Variant Input Type">
+            <option selected="True" value="mutect_smchet">MuTect</option>
+            <option value="sanger">Sanger</option>
+            <option value="oncoscan">Oncoscan</option>
+        </param>
+        <param help="Confidence in CNVs. Set to &lt; 1 to scale 'd' values" name="cnv_confidence" type="float" value="1.0"/>
+        <param help="Approximate length of reads. Used to calculate confidence in CNV frequencies (default: 100)" name="read_length" type="integer" value="100"/>
+        <param format="vcf" help="Variant File" name="vcf_file" type="data"/>
+  </inputs>
+  <outputs>
+        <data format="tabular" label="CNVs for PhyloWGS Tool" name="output_cnvs"/>
+        <data format="tabular" label="variants for PhyloWGS" name="output_variants"/>
+  </outputs>
+  <help><![CDATA[- Second tool to be executed when using the PhyloWGS example.]]>
+    
+<![CDATA[- Extracts SSMs from a VCF file and formats CNVs from a CNV text file.]]>
+    
+<![CDATA[- More information on this tool can be found at https://github.com/morrislab/phylowgs/tree/master/parser under create_phylowgs_inputs.py]]> 
+    
+<![CDATA[- Output from this tool will be used in PhyloWGS 3 - Tool]]></help>
+</tool>

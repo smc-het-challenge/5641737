@@ -1,0 +1,30 @@
+<?xml version="1.0" ?><tool id="PhyloWGS_Report_Format" name="PhyloWGS 4 - Report Format" version="0.1.0">
+  <stdio>
+    <exit_code range="1:"/>
+  </stdio>
+  <requirements>
+    <container type="docker">docker.synapse.org/syn2813581/5641737/phylowgs:smchet1</container>
+  </requirements>
+  <command><![CDATA[
+python /opt/phylowgs/write_results.py 
+${TumourSample} ${trees} 
+${tree_summary} ${mutations} ${mutation_assignments}
+]]></command>
+    <inputs>
+		<param help="ID of Tumour Sample used in the analysis" label="Tumour Sample" name="TumourSample" type="integer" value="1"/>
+		<param format="binary" help="Trees zip file from PhyloWGS Tool output" label="Trees" name="trees" type="data"/>
+    </inputs>
+    <outputs>
+		<data format="binary" label="trees.json.gz" name="tree_summary"/>
+		<data format="binary" label="mutations.json.gz" name="mutations"/>
+		<data format="binary" label="mutation_assignments.json.gz" name="mutation_assignments"/>
+    </outputs>
+    <help><![CDATA[- Fourth tool to be executed when using the PhyloWGS example.]]>
+    
+<![CDATA[- Formats PhyloWGS output into JSON files, that are easier to visualize]]>
+    
+<![CDATA[- More information on this tool can be found at https://github.com/morrislab/phylowgs under write_results.py]]> 
+    
+<![CDATA[- Output from this tool will be used in PhyloWGS - 5 Submission Format.]]>
+    </help>
+    </tool>

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?><tool id="PhyloWGS_CNVs_Prep" name="PhyloWGS 1 - CNVs Prep" version="0.1.0">
+  <stdio>
+    <exit_code range="1:"/>
+  </stdio>
+  <requirements>
+    <container type="docker">docker.synapse.org/syn2813581/5641737/phylowgs:smchet1</container>
+  </requirements>
+  <command>
+  #if str($battenberg) != 'None':
+  <![CDATA[
+python /opt/phylowgs/parser/parse_cnvs.py 
+--cnv-format battenberg-smchet
+--cellularity ${cellularity}
+--cnv-output ${cnv_out}
+${battenberg}
+]]>
+#end if
+</command>
+  <inputs>
+        <param format="tabular" help="Battenberg-formatted list of CNVs" name="battenberg" optional="true" type="data"/>
+        <param help="Fraction of sample that is cancerous rather than somatic" label="Cellularity" name="cellularity" type="float" value="1.0"/>
+  </inputs>
+  <outputs>
+        <data format="tabular" label="CNVs for PhyloWGS Tool Input Prep" name="cnv_out"/>
+  </outputs>
+  <help><![CDATA[- First tool to be executed when using the PhyloWGS example.]]>
+    
+<![CDATA[- Extracts CNVs from a battenberg file for input to PhyloWGS. ]]>
+    
+<![CDATA[- More information on this tool can be found at https://github.com/morrislab/phylowgs/tree/master/parser under parse_cnvs.py]]> 
+    
+<![CDATA[- Output from this tool will be used in PhyloWGS 2 - Tool Input Prep]]>
+  </help>
+</tool>
